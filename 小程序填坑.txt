@@ -1,0 +1,41 @@
+坑1、没有DOM
+
+无法使用熟悉的$查找、document.getElementById等等这些操作，小程序取而代之的是数据绑定技术，所谓的数据驱动，就是数据改变之后，视图展示跟着自己会变。DOM没了，所以只好频繁的使用this.setData({})来操作页面属性。
+
+tip：在方法最初最好添加 var than = this; 使用than代替this，否则方法内部函数的this会被替代。
+
+ 
+
+坑2、图片问题
+
+除tapbar外，背景图无法使用本地资源，替代方式是使用base64资源或者外网加载。每个image标签底部有一条透明间隔，非padding，非margin。在图片前面做遮罩层时可能会被坑。
+
+ 
+
+坑3、跳转
+
+小程序页面跳转打开最多五层，超出五层不会跳转了，所以大家要注意，可以在跳转的时候关闭前一个页面。
+
+ 
+
+坑4、wxml标签
+
+wxml的标签跟html里面的一些标签是一样的，就说view标签就相当于div标签，text标签相当于span标签吧，然就是表单元素，这里就要注意了，在微信小程序中，表单元素都是原生组件，微信小程序中原生组件层级最高，所以在用input，canvas，map这些组件就要注意了。其中在样式上不支持overflow-x/overflow-y，只可使用overflow。
+
+在input标签中会出现placeholder文字位置不固定，可使用使用placeholder-class属性修改placeholder样式。input标签无法设置 font-family; 。对input直接float：left也是不行的，要在input外面套view，然后对其进行浮动。
+
+scroll-view组件注意事项：1、不要在scroll-view 中使用 textarea、map、canvas、video 组件2、scroll-into-view 的优先级高于 scroll-top。3、在滚动 scroll-view 时会阻止页面回弹，所以在 scroll-view 中滚动，是无法触发 onPullDownRefresh。
+
+在map组件中只能使用cover-view标签，在cover-view标签下只能使用cover-view以及cover-image标签，这两种标签在样式上的问题非常多，不建议使用，问题1、当使用display:none;做隐藏的时候，其内容文字会出现在屏幕右上角，建议使用 wx:if="false"或position:absolute;left:-1000rpx;这种方式做隐藏。2、border不支持单边。3、不支持padding的使用，在安卓端会出现padding消失的问题。
+
+ 
+
+坑5、动画问题
+
+在小程序中当有两个元素同时发生变化时，会出现冲突，导致其中一个变化，而另一个不做变化，所以要使用setTimeout方法避免元素同时出现变化。
+
+ 
+
+坑6、js问题
+
+js执行顺序，在开发者工具中执行先执行aap.js然后执行其他js文件，但在手机上app.js和其他js是同时执行的，就比如说你在app.js里面向本地存储一个变量，然后再去index.js里面取这个变量，在开发者工具中是可以取到的，但在手机上它会取不到的。
